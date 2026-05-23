@@ -1,76 +1,80 @@
 # 🎫 Ticketing System Frontend
 
-A modern, responsive, and feature-rich Ticketing & Incident Management dashboard. Built with **React 19**, **Vite**, and **Vanilla CSS**, this application provides a premium user interface with robust support ticket management, team assignments, custom analytics, and administrative directory controls.
+A simple, responsive, and easy-to-use Ticketing and Incident Management dashboard. Built with React 19, Vite, and Vanilla CSS, this application provides a clean interface for tracking support tickets, assigning them to teams, viewing basic analytics, and managing users.
+
+Live Demo: [https://ticketing-system-frontend-8tzpolizj-anonymous21-03s-projects.vercel.app](https://ticketing-system-frontend-8tzpolizj-anonymous21-03s-projects.vercel.app)
+
+Backend API Repo: [https://github.com/Anonymous21-03/Ticketing_System_Backend](https://github.com/Anonymous21-03/Ticketing_System_Backend)
 
 ---
 
-## ✨ Features
+## Features
 
-- **📊 Comprehensive Dashboard**: 
-  - Dynamic analytics charts powered by **Recharts** visualizing ticket distribution by status, priority, and creation rate.
-  - Quick-view performance metric cards for Open, In Progress, Resolved, and High-Priority tickets.
-- **🎟️ Advanced Ticket Management**:
-  - Grid-based search, dynamic filtration, and pagination options.
-  - Multi-status workflows (Open, In Progress, Resolved) and priority indicators (Low, Medium, High).
-  - Detailed Ticket view supporting real-time status/priority transitions, assignee changes, and comment threads.
-- **👥 Administrative User Directory**:
-  - Secure dashboard for user creation, role assignment (`admin` vs. `user`), and password reset controls.
-- **🛡️ Team Organization**:
-  - Custom team creation, organization, and department categorization.
-- **🔐 Secure Role-Based Authentication**:
-  - Custom React Router v7 routing protected by strict role authentication guards.
-  - Persistent session management (via LocalStorage authorization interceptors).
-- **🎨 Premium HSL-Based Theme**:
-  - Clean, glassmorphism-inspired design with custom transitions, variable styling, and responsive layout.
-
----
-
-## 🛠️ Technology Stack
-
-- **Framework**: [React 19](https://react.dev/)
-- **Build Tool**: [Vite 8](https://vite.dev/)
-- **Routing**: [React Router v7](https://reactrouter.com/)
-- **Charts**: [Recharts 3](https://recharts.org/)
-- **HTTP Client**: [Axios](https://axios-http.com/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Notifications**: [React Hot Toast](https://react-hot-toast.com/)
-- **Styling**: Vanilla CSS with HSL design system tokens
+- **Dashboard and Analytics**:
+  - View key metrics like open, in-progress, resolved, and high-priority tickets.
+  - Interactive charts (using Recharts) to see ticket status, priority, and daily creation rates.
+- **Ticket Management**:
+  - Search, filter, and page through support tickets.
+  - Change ticket status (Open, In Progress, Resolved) and priority (Low, Medium, High).
+  - Open a detailed ticket view to update assignees and post comments.
+- **User Directory**:
+  - Manage users, assign roles (Admin vs. User), and reset passwords.
+- **Team Management**:
+  - Create and organize teams and departments.
+- **Authentication**:
+  - Secure login with role-based routing.
+  - Keeps user logged in using secure token storage in localStorage.
+- **Modern Styling**:
+  - Sleek design using HSL colors, CSS variables, and responsive layouts.
 
 ---
 
-## 📂 Project Structure
+## Tech Stack
+
+- **Framework**: React 19
+- **Build Tool**: Vite
+- **Routing**: React Router v7
+- **Charts**: Recharts
+- **HTTP Client**: Axios
+- **Icons**: Lucide React
+- **Notifications**: React Hot Toast
+- **Styling**: Vanilla CSS
+
+---
+
+## Project Structure
 
 ```
 Ticketing_System_Frontend/
-├── public/                 # Static asset definitions and system SVG icons
+├── public/                 # Static files and SVG icons
 ├── src/
-│   ├── assets/             # Images and project SVG illustrations
+│   ├── assets/             # Images and design assets
 │   ├── components/
-│   │   ├── layout/         # App Layout, Header, and Sidebar components
-│   │   ├── ui/             # Reusable UI primitives (Buttons, Tables, Badges, Modals)
-│   │   └── ProtectedRoute  # Route authentication logic & role guards
-│   ├── context/            # AuthContext providers for global state management
-│   ├── pages/              # Primary view controllers (Dashboard, Tickets, Login, etc.)
-│   ├── services/           # Backend API interceptors and endpoint bindings
-│   ├── styles/             # Global token declarations and core styling variables
-│   ├── App.jsx             # Main router declaration & toast configurations
-│   └── main.jsx            # Application startup node
-├── .env                    # System environment definitions
-├── eslint.config.js        # Linter policies
-├── package.json            # Target dependency map
-└── vite.config.js          # Vite build presets
+│   │   ├── layout/         # Header, Sidebar, and overall layout
+│   │   ├── ui/             # Reusable UI parts like buttons, tables, and modals
+│   │   └── ProtectedRoute  # Route guards for authentication
+│   ├── context/            # Auth context for user state
+│   ├── pages/              # Main pages (Dashboard, Tickets, Login, etc.)
+│   ├── services/           # Axios setup and API calls
+│   ├── styles/             # Global CSS and HSL styling variables
+│   ├── App.jsx             # App router and notification setup
+│   └── main.jsx            # Entry point
+├── .env                    # Environment variables configuration
+├── eslint.config.js        # Linter rules
+├── package.json            # Dependencies and scripts
+└── vite.config.js          # Vite config
 ```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 📋 Prerequisites
+### Prerequisites
 
-- **Node.js**: `v18+` or higher recommended
+- **Node.js**: Version 18 or higher
 - **npm** or **yarn** package manager
 
-### ⚙️ Installation
+### Setup and Installation
 
 1. **Clone the Repository**
    ```bash
@@ -84,50 +88,38 @@ Ticketing_System_Frontend/
    ```
 
 3. **Configure Environment Variables**
-   Create a `.env` file in the root directory (or use the pre-configured file) and define your backend API host url:
+   Create a `.env` file in the root folder and add your backend URL:
    ```env
-   VITE_API_URL=http://localhost:8000
+   VITE_API_URL=https://ticketing-system-backend-wpux.onrender.com/
    ```
 
-### 💻 Running Locally
+### Running Locally
 
-To launch the local development server with Hot Module Replacement (HMR):
+To start the development server:
 ```bash
 npm run dev
 ```
 
-To compile production assets:
+To build the project for production:
 ```bash
 npm run build
 ```
 
-To preview the built production bundles locally:
+To preview the production build locally:
 ```bash
 npm run preview
 ```
 
 ---
 
-## 🔒 Authentication & Access
+## Authentication and Roles
 
-Access to specific directory views and modules is governed by role authorization:
-- **Regular Users**: Can view dashboard statistics, manage own profile details, create tickets, update status, and participate in ticket commentary.
-- **Administrators (`admin`)**: Possess absolute system authority. Can additionally view administrative lists, manage teams, create and modify user roles, and trigger password resets.
-
----
-
-## 🤝 Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Access is controlled by user roles:
+- **User Role**: Can view dashboard statistics, update their profile, create tickets, change ticket status, and comment on tickets.
+- **Admin Role**: Full system access. Can also view the user directory, manage teams, create users, and reset user passwords.
 
 ---
 
-## 📄 License
+## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is licensed under the MIT License.
