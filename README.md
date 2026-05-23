@@ -118,8 +118,3 @@ Access is controlled by user roles:
 - **User Role**: Can view dashboard statistics, update their profile, create tickets, change ticket status, and comment on tickets.
 - **Admin Role**: Full system access. Can also view the user directory, manage teams, create users, and reset user passwords.
 
----
-
-## License
-
-This project is licensed under the MIT License.
