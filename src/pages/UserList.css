@@ -1,0 +1,41 @@
+.user-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.user-filter-bar {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.user-filter-bar .search-field {
+  flex: 1;
+  min-width: 250px;
+}
+
+.user-filter-bar .role-select {
+  width: 180px;
+}
+
+.row-action-buttons {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.row-action-buttons .btn {
+  padding: 0.375rem;
+}
+
+@media (max-width: 768px) {
+  .user-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .user-filter-bar .role-select {
+    width: 100%;
+  }
+}

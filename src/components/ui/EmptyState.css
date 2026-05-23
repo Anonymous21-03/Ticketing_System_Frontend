@@ -1,0 +1,49 @@
+.empty-state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  border-radius: var(--radius-lg);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.empty-state-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--border);
+}
+
+.empty-state-icon {
+  opacity: 0.8;
+}
+
+.empty-state-title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  max-width: 360px;
+}
+
+.empty-state-action {
+  margin-top: 0.5rem;
+}

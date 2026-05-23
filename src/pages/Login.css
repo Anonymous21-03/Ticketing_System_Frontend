@@ -1,0 +1,98 @@
+.login-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+/* Background floating gradient orbs */
+.bg-orb {
+  position: absolute;
+  border-radius: var(--radius-full);
+  filter: blur(100px);
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.orb-1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 80%);
+}
+
+.orb-2 {
+  bottom: -10%;
+  right: -10%;
+  width: 45vw;
+  height: 45vw;
+  background: radial-gradient(circle, #00d2ff 0%, transparent 80%);
+}
+
+.login-card-wrapper {
+  width: 100%;
+  max-width: 420px;
+  z-index: 10;
+}
+
+.login-card {
+  padding: 2.5rem 2rem;
+  box-shadow: var(--shadow-lg), 0 0 40px -10px hsla(210, 100%, 50%, 0.1);
+  border-radius: var(--radius-xl);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-logo {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+.login-title {
+  font-size: var(--font-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 0%, var(--text-tertiary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.25rem;
+}
+
+.login-subtitle {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-alert-danger {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background-color: hsla(0, 100%, 50%, 0.1);
+  border: 1px solid hsla(0, 100%, 50%, 0.2);
+  color: var(--danger);
+  font-size: var(--font-sm);
+}
+
+.login-submit-btn {
+  margin-top: 0.5rem;
+  height: 46px;
+  font-size: var(--font-sm);
+}

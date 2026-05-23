@@ -1,0 +1,34 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+.app-main-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* prevents flex items from overflowing */
+  min-height: 100vh;
+}
+
+.app-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .app-main-container {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-content {
+    padding: 1rem;
+  }
+}

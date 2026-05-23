@@ -1,0 +1,95 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  border-radius: var(--radius-full);
+  text-transform: capitalize;
+  letter-spacing: 0.025em;
+  width: fit-content;
+  border: 1px solid transparent;
+}
+
+/* Statuses */
+.badge-open {
+  background: hsla(210, 100%, 50%, 0.1);
+  color: hsl(210, 100%, 70%);
+  border-color: hsla(210, 100%, 50%, 0.2);
+}
+
+.badge-in_progress {
+  background: hsla(35, 100%, 50%, 0.1);
+  color: hsl(35, 100%, 65%);
+  border-color: hsla(35, 100%, 50%, 0.2);
+}
+
+.badge-resolved {
+  background: hsla(140, 100%, 40%, 0.1);
+  color: hsl(140, 100%, 65%);
+  border-color: hsla(140, 100%, 40%, 0.2);
+}
+
+.badge-closed {
+  background: hsla(220, 10%, 60%, 0.1);
+  color: hsl(220, 10%, 70%);
+  border-color: hsla(220, 10%, 60%, 0.2);
+}
+
+/* Priorities */
+.badge-low {
+  background: hsla(220, 15%, 50%, 0.1);
+  color: hsl(220, 15%, 70%);
+  border-color: hsla(220, 15%, 50%, 0.2);
+}
+
+.badge-medium {
+  background: hsla(45, 100%, 45%, 0.1);
+  color: hsl(45, 100%, 65%);
+  border-color: hsla(45, 100%, 45%, 0.2);
+}
+
+.badge-high {
+  background: hsla(15, 100%, 50%, 0.1);
+  color: hsl(15, 100%, 65%);
+  border-color: hsla(15, 100%, 50%, 0.2);
+}
+
+.badge-urgent {
+  background: hsla(340, 100%, 50%, 0.15);
+  color: hsl(340, 100%, 65%);
+  border-color: hsla(340, 100%, 50%, 0.35);
+  animation: pulse-border 2s infinite ease-in-out;
+}
+
+/* Roles */
+.badge-admin {
+  background: hsla(280, 100%, 65%, 0.1);
+  color: hsl(280, 100%, 75%);
+  border-color: hsla(280, 100%, 65%, 0.2);
+}
+
+.badge-agent {
+  background: hsla(170, 100%, 40%, 0.1);
+  color: hsl(170, 100%, 60%);
+  border-color: hsla(170, 100%, 40%, 0.2);
+}
+
+.badge-employee {
+  background: hsla(200, 100%, 50%, 0.1);
+  color: hsl(200, 100%, 65%);
+  border-color: hsla(200, 100%, 50%, 0.2);
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: hsla(340, 100%, 50%, 0.35);
+    box-shadow: 0 0 0 0 hsla(340, 100%, 50%, 0.1);
+  }
+  50% {
+    border-color: hsla(340, 100%, 50%, 0.7);
+    box-shadow: 0 0 8px 1px hsla(340, 100%, 50%, 0.2);
+  }
+}

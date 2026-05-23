@@ -1,0 +1,37 @@
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.spinner-container.full-page {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-primary);
+  z-index: 2000;
+  height: 100vh;
+}
+
+.spinner-icon {
+  color: var(--accent);
+  animation: spin 1s linear infinite;
+}
+
+.spinner-message {
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  font-weight: 500;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

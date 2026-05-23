@@ -1,0 +1,159 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .profile-grid {
+    grid-template-columns: 340px 1fr;
+    align-items: start;
+  }
+}
+
+.profile-card {
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-card-header {
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.large-avatar {
+  width: 5rem;
+  height: 5rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--accent) 0%, #00d2ff 100%);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  box-shadow: 0 0 20px -5px var(--accent);
+  margin-bottom: 1rem;
+}
+
+.profile-name {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.profile-username {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.profile-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.detail-value {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+  word-break: break-all;
+}
+
+/* Security password card */
+.security-card {
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.card-subheading {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 500px;
+}
+
+.password-rules-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1rem;
+}
+
+.rules-heading {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.password-rules-box ul {
+  padding-left: 1rem;
+  list-style-type: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.password-rules-box li {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.save-pw-btn {
+  align-self: flex-start;
+  height: 42px;
+}
+
+@media (max-width: 1023px) {
+  .save-pw-btn {
+    align-self: stretch;
+  }
+}

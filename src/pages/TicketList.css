@@ -1,0 +1,41 @@
+.ticket-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.table-responsive {
+  width: 100%;
+}
+
+.ticket-id-cell {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  width: 80px;
+}
+
+.ticket-title-cell {
+  font-weight: 500;
+  max-width: 250px;
+}
+
+.unassigned-lbl {
+  font-style: italic;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 768px) {
+  .ticket-title-cell {
+    max-width: 180px;
+  }
+}
