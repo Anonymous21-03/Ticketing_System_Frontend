@@ -138,15 +138,19 @@ export default function TicketDetail() {
 
   // Handle Ticket Field Changes (Status, Priority, Assignee, Team)
   const handleFieldChange = async (fieldName, value) => {
+    const parsedValue = ['assigned_to', 'team_id'].includes(fieldName) && value !== ''
+      ? parseInt(value)
+      : (value === '' ? null : value);
+
     const prevTicket = { ...ticket };
     // Optimistic update
     setTicket(prev => ({
       ...prev,
-      [fieldName]: value
+      [fieldName]: parsedValue
     }));
 
     try {
-      const updates = { [fieldName]: value === '' ? null : value };
+      const updates = { [fieldName]: parsedValue };
       await ticketApi.updateTicket(ticketId, updates);
       toast.success('Ticket updated successfully!');
       // Reload stats & history logs
