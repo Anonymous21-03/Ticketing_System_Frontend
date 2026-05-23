@@ -37,60 +37,20 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      if (isAdmin) {
-        // Fetch Admin global stats
-        const statsData = await ticketApi.getStats();
-        setStats(statsData);
+      // Fetch role-scoped stats server-side
+      const statsData = await ticketApi.getStats();
+      setStats(statsData);
 
-        // Fetch users & teams count
+      // Fetch recent tickets (only the 5 most recent tickets shown in the UI)
+      const ticketsData = await ticketApi.getTickets({ limit: 5 });
+      setTickets(ticketsData.items || []);
+
+      if (isAdmin) {
+        // Fetch users & teams count (Admin only)
         const usersData = await userApi.getUsers({ limit: 1 });
         const teamsData = await teamApi.getTeams({ limit: 1 });
         setUsersCount(usersData.total || 0);
         setTeamsCount(teamsData.total || 0);
-
-        // Fetch recent tickets
-        const ticketsData = await ticketApi.getTickets({ limit: 5 });
-        setTickets(ticketsData.items || []);
-      } else if (isAgent) {
-        // Fetch agent tickets (which defaults to getMyTickets)
-        const ticketsData = await ticketApi.getTickets({ limit: 100 });
-        setTickets(ticketsData.items || []);
-        
-        // Calculate status counts client-side for metrics
-        const allItems = ticketsData.items || [];
-        const statusMap = { open: 0, in_progress: 0, resolved: 0, closed: 0 };
-        const priorityMap = { low: 0, medium: 0, high: 0, urgent: 0 };
-        let assignedToMeCount = 0;
-
-        allItems.forEach(ticket => {
-          if (statusMap[ticket.status] !== undefined) statusMap[ticket.status]++;
-          if (priorityMap[ticket.priority] !== undefined) priorityMap[ticket.priority]++;
-          if (ticket.assigned_to === user.id) assignedToMeCount++;
-        });
-
-        setStats({
-          total: allItems.length,
-          by_status: statusMap,
-          by_priority: priorityMap,
-          assignedToMe: assignedToMeCount
-        });
-      } else if (isEmployee) {
-        // Fetch employee's created tickets
-        const ticketsData = await ticketApi.getTickets({ limit: 100 });
-        setTickets(ticketsData.items || []);
-
-        const allItems = ticketsData.items || [];
-        const statusMap = { open: 0, in_progress: 0, resolved: 0, closed: 0 };
-        allItems.forEach(ticket => {
-          if (statusMap[ticket.status] !== undefined) statusMap[ticket.status]++;
-        });
-
-        setStats({
-          total: allItems.length,
-          by_status: statusMap,
-          active: statusMap.open + statusMap.in_progress,
-          resolved: statusMap.resolved + statusMap.closed
-        });
       }
     } catch (err) {
       console.error(err);
