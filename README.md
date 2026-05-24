@@ -114,7 +114,29 @@ npm run preview
 
 ## Authentication and Roles
 
-Access is controlled by user roles:
-- **User Role**: Can view dashboard statistics, update their profile, create tickets, change ticket status, and comment on tickets.
-- **Admin Role**: Full system access. Can also view the user directory, manage teams, create users, and reset user passwords.
+Access and permissions are controlled based on three user roles:
+
+- **Admin Role**: Full system access. Can view the user directory, manage teams/departments, create users, edit roles, and reset user passwords.
+- **Agent Role**: Customer support agent or developer. Can view, manage, and comments on tickets, and assign tickets to themselves or team members.
+- **Employee Role**: Regular end-user. Can create new support tickets, view their tickets, add comments, and update status on their tickets.
+
+### Demo / Trial Accounts
+
+You can log in to the application using any of the following pre-seeded trial accounts. The default password for **all accounts** is:
+
+🔑 **Password:** `Password@123`
+
+| Role | Username | Example User | Department / Team |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `rahul` | Rahul Sharma | *(Global / No Team)* |
+| **Admin** | `priya` | Priya Verma | *(Global / No Team)* |
+| **Agent** | `rohan` | Rohan Gupta | Frontend |
+| **Agent** | `kavita` | Kavita Joshi | Backend |
+| **Agent** | `ankit` | Ankit Mehta | Platform Engineering |
+| **Agent** | `meera` | Meera Nair | QA & Testing |
+| **Agent** | `vikram` | Vikram Singh | DevOps |
+| **Employee** | `pooja` | Pooja Desai | Frontend |
+| **Employee** | `deepak` | Deepak Rao | Platform Engineering |
+| **Employee** | `amit` | Amit Tiwari | *(No Team)* |
+
 
