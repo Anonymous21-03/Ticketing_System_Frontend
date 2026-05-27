@@ -375,7 +375,7 @@ export default function TicketDetail() {
         </Button>
 
         <div className="navigation-actions">
-          {!ticket.is_active && isAdmin && (
+          {ticket.is_active === false && isAdmin && (
             <Button variant="primary" size="sm" icon={RefreshCw} onClick={handleReactivateTicket} loading={reactivateLoading}>
               Reactivate Ticket
             </Button>
