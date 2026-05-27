@@ -35,9 +35,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.025em;
-  background: linear-gradient(135deg, #fff 0%, var(--text-tertiary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 }
 
 .sidebar-close-btn {
@@ -75,7 +73,7 @@
 }
 
 .sidebar-link.active {
-  background: linear-gradient(90deg, hsla(210, 100%, 50%, 0.15) 0%, hsla(210, 100%, 50%, 0.03) 100%);
+  background-color: var(--accent-muted);
   color: var(--accent);
   border-left: 3px solid var(--accent);
   padding-left: calc(1rem - 3px);
@@ -106,7 +104,7 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent) 0%, #00d2ff 100%);
+  background: var(--accent);
   color: white;
   display: flex;
   align-items: center;
@@ -148,8 +146,8 @@
 }
 
 .sidebar-logout-btn:hover {
-  background-color: hsla(0, 100%, 50%, 0.08);
-  border-color: hsla(0, 100%, 50%, 0.2);
+  background-color: var(--danger-muted);
+  border-color: hsl(0, 60%, 85%);
 }
 
 /* Sidebar overlay for mobile drawer */
@@ -174,8 +172,8 @@
     display: block;
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
     z-index: 99;
     opacity: 0;
     pointer-events: none;

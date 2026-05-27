@@ -2,41 +2,41 @@
 
 :root {
   /* ── Background ── */
-  --bg-primary: hsl(225, 25%, 8%);
-  --bg-secondary: hsl(225, 20%, 12%);
-  --bg-tertiary: hsl(225, 18%, 16%);
-  --bg-elevated: hsl(225, 16%, 20%);
+  --bg-primary: hsl(220, 20%, 97%);
+  --bg-secondary: hsl(0, 0%, 100%);
+  --bg-tertiary: hsl(220, 16%, 94%);
+  --bg-elevated: hsl(220, 14%, 91%);
 
   /* ── Accent ── */
-  --accent: hsl(250, 90%, 65%);
-  --accent-hover: hsl(250, 90%, 72%);
-  --accent-muted: hsl(250, 40%, 25%);
-  --accent-glow: hsla(250, 90%, 65%, 0.15);
+  --accent: hsl(220, 80%, 50%);
+  --accent-hover: hsl(220, 80%, 44%);
+  --accent-muted: hsl(220, 50%, 92%);
+  --accent-glow: hsla(220, 80%, 50%, 0.12);
 
   /* ── Semantic ── */
-  --success: hsl(145, 70%, 50%);
-  --success-muted: hsl(145, 30%, 18%);
-  --warning: hsl(38, 95%, 55%);
-  --warning-muted: hsl(38, 40%, 18%);
-  --danger: hsl(0, 80%, 60%);
-  --danger-muted: hsl(0, 35%, 18%);
-  --info: hsl(210, 90%, 60%);
-  --info-muted: hsl(210, 35%, 18%);
+  --success: hsl(145, 63%, 42%);
+  --success-muted: hsl(145, 40%, 92%);
+  --warning: hsl(38, 92%, 50%);
+  --warning-muted: hsl(38, 80%, 92%);
+  --danger: hsl(0, 72%, 51%);
+  --danger-muted: hsl(0, 60%, 94%);
+  --info: hsl(210, 80%, 52%);
+  --info-muted: hsl(210, 60%, 93%);
 
   /* ── Text ── */
-  --text-primary: hsl(0, 0%, 95%);
-  --text-secondary: hsl(225, 15%, 55%);
-  --text-tertiary: hsl(225, 12%, 40%);
-  --text-inverse: hsl(225, 25%, 8%);
+  --text-primary: hsl(220, 20%, 14%);
+  --text-secondary: hsl(220, 10%, 46%);
+  --text-tertiary: hsl(220, 8%, 62%);
+  --text-inverse: hsl(0, 0%, 100%);
 
   /* ── Border ── */
-  --border: hsl(225, 15%, 20%);
-  --border-light: hsl(225, 12%, 25%);
+  --border: hsl(220, 14%, 89%);
+  --border-light: hsl(220, 12%, 84%);
 
-  /* ── Glass ── */
-  --glass: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-hover: rgba(255, 255, 255, 0.08);
+  /* ── Surface (replaces glass for light mode) ── */
+  --glass: hsl(0, 0%, 100%);
+  --glass-border: hsl(220, 14%, 89%);
+  --glass-hover: hsl(220, 16%, 94%);
 
   /* ── Spacing ── */
   --space-xs: 0.25rem;
@@ -65,10 +65,10 @@
   --radius-full: 9999px;
 
   /* ── Shadows ── */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px var(--accent-glow);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 12px var(--accent-glow);
 
   /* ── Transitions ── */
   --transition-fast: 150ms ease;

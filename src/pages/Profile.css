@@ -37,14 +37,13 @@
   width: 5rem;
   height: 5rem;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--accent) 0%, #00d2ff 100%);
+  background: var(--accent);
   color: white;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: var(--font-2xl);
   font-weight: 700;
-  box-shadow: 0 0 20px -5px var(--accent);
   margin-bottom: 1rem;
 }
 

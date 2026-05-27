@@ -162,7 +162,7 @@
 .comment-post-box textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px hsla(210, 100%, 50%, 0.15);
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .comment-post-actions {
@@ -309,7 +309,7 @@
   color: var(--accent);
   font-weight: 700;
   font-size: 0.65rem;
-  background-color: hsla(210, 100%, 50%, 0.1);
+  background-color: var(--accent-muted);
   padding: 0.125rem 0.375rem;
   border-radius: var(--radius-sm);
 }

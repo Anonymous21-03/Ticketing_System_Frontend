@@ -6,8 +6,8 @@
   text-align: center;
   padding: 3rem 2rem;
   border-radius: var(--radius-lg);
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
   max-width: 500px;
   margin: 2rem auto;

@@ -15,81 +15,81 @@
 
 /* Statuses */
 .badge-open {
-  background: hsla(210, 100%, 50%, 0.1);
-  color: hsl(210, 100%, 70%);
-  border-color: hsla(210, 100%, 50%, 0.2);
+  background: hsl(210, 80%, 94%);
+  color: hsl(210, 80%, 40%);
+  border-color: hsl(210, 80%, 86%);
 }
 
 .badge-in_progress {
-  background: hsla(35, 100%, 50%, 0.1);
-  color: hsl(35, 100%, 65%);
-  border-color: hsla(35, 100%, 50%, 0.2);
+  background: hsl(35, 90%, 92%);
+  color: hsl(35, 80%, 38%);
+  border-color: hsl(35, 80%, 82%);
 }
 
 .badge-resolved {
-  background: hsla(140, 100%, 40%, 0.1);
-  color: hsl(140, 100%, 65%);
-  border-color: hsla(140, 100%, 40%, 0.2);
+  background: hsl(145, 50%, 92%);
+  color: hsl(145, 60%, 34%);
+  border-color: hsl(145, 45%, 82%);
 }
 
 .badge-closed {
-  background: hsla(220, 10%, 60%, 0.1);
-  color: hsl(220, 10%, 70%);
-  border-color: hsla(220, 10%, 60%, 0.2);
+  background: hsl(220, 10%, 93%);
+  color: hsl(220, 10%, 46%);
+  border-color: hsl(220, 10%, 85%);
 }
 
 /* Priorities */
 .badge-low {
-  background: hsla(220, 15%, 50%, 0.1);
-  color: hsl(220, 15%, 70%);
-  border-color: hsla(220, 15%, 50%, 0.2);
+  background: hsl(220, 15%, 93%);
+  color: hsl(220, 15%, 46%);
+  border-color: hsl(220, 15%, 85%);
 }
 
 .badge-medium {
-  background: hsla(45, 100%, 45%, 0.1);
-  color: hsl(45, 100%, 65%);
-  border-color: hsla(45, 100%, 45%, 0.2);
+  background: hsl(45, 90%, 90%);
+  color: hsl(45, 80%, 32%);
+  border-color: hsl(45, 80%, 78%);
 }
 
 .badge-high {
-  background: hsla(15, 100%, 50%, 0.1);
-  color: hsl(15, 100%, 65%);
-  border-color: hsla(15, 100%, 50%, 0.2);
+  background: hsl(15, 85%, 93%);
+  color: hsl(15, 80%, 42%);
+  border-color: hsl(15, 80%, 84%);
 }
 
 .badge-urgent {
-  background: hsla(340, 100%, 50%, 0.15);
-  color: hsl(340, 100%, 65%);
-  border-color: hsla(340, 100%, 50%, 0.35);
+  background: hsl(340, 80%, 94%);
+  color: hsl(340, 80%, 42%);
+  border-color: hsl(340, 80%, 84%);
   animation: pulse-border 2s infinite ease-in-out;
 }
 
 /* Roles */
 .badge-admin {
-  background: hsla(280, 100%, 65%, 0.1);
-  color: hsl(280, 100%, 75%);
-  border-color: hsla(280, 100%, 65%, 0.2);
+  background: hsl(280, 60%, 94%);
+  color: hsl(280, 60%, 42%);
+  border-color: hsl(280, 60%, 86%);
 }
 
 .badge-agent {
-  background: hsla(170, 100%, 40%, 0.1);
-  color: hsl(170, 100%, 60%);
-  border-color: hsla(170, 100%, 40%, 0.2);
+  background: hsl(170, 50%, 92%);
+  color: hsl(170, 55%, 32%);
+  border-color: hsl(170, 45%, 82%);
 }
 
 .badge-employee {
-  background: hsla(200, 100%, 50%, 0.1);
-  color: hsl(200, 100%, 65%);
-  border-color: hsla(200, 100%, 50%, 0.2);
+  background: hsl(200, 70%, 93%);
+  color: hsl(200, 70%, 36%);
+  border-color: hsl(200, 60%, 84%);
 }
 
 @keyframes pulse-border {
   0%, 100% {
-    border-color: hsla(340, 100%, 50%, 0.35);
-    box-shadow: 0 0 0 0 hsla(340, 100%, 50%, 0.1);
+    border-color: hsl(340, 80%, 84%);
+    box-shadow: 0 0 0 0 hsla(340, 80%, 50%, 0.05);
   }
   50% {
-    border-color: hsla(340, 100%, 50%, 0.7);
-    box-shadow: 0 0 8px 1px hsla(340, 100%, 50%, 0.2);
+    border-color: hsl(340, 80%, 70%);
+    box-shadow: 0 0 6px 1px hsla(340, 80%, 50%, 0.1);
   }
 }

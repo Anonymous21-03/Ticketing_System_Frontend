@@ -10,30 +10,9 @@
   padding: 1.5rem;
 }
 
-/* Background floating gradient orbs */
+/* Background subtle pattern instead of glowing orbs */
 .bg-orb {
-  position: absolute;
-  border-radius: var(--radius-full);
-  filter: blur(100px);
-  opacity: 0.15;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.orb-1 {
-  top: -10%;
-  left: -10%;
-  width: 50vw;
-  height: 50vw;
-  background: radial-gradient(circle, var(--accent) 0%, transparent 80%);
-}
-
-.orb-2 {
-  bottom: -10%;
-  right: -10%;
-  width: 45vw;
-  height: 45vw;
-  background: radial-gradient(circle, #00d2ff 0%, transparent 80%);
+  display: none;
 }
 
 .login-card-wrapper {
@@ -44,8 +23,10 @@
 
 .login-card {
   padding: 2.5rem 2rem;
-  box-shadow: var(--shadow-lg), 0 0 40px -10px hsla(210, 100%, 50%, 0.1);
+  box-shadow: var(--shadow-lg);
   border-radius: var(--radius-xl);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
 }
 
 .login-header {
@@ -62,9 +43,7 @@
   font-size: var(--font-2xl);
   font-weight: 800;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #ffffff 0%, var(--text-tertiary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
@@ -85,8 +64,8 @@
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
-  background-color: hsla(0, 100%, 50%, 0.1);
-  border: 1px solid hsla(0, 100%, 50%, 0.2);
+  background-color: var(--danger-muted);
+  border: 1px solid hsl(0, 60%, 85%);
   color: var(--danger);
   font-size: var(--font-sm);
 }

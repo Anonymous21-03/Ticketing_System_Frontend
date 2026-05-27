@@ -21,8 +21,8 @@
   width: 4.5rem;
   height: 4.5rem;
   border-radius: var(--radius-full);
-  background-color: hsla(0, 100%, 50%, 0.08);
-  border: 1px solid hsla(0, 100%, 50%, 0.15);
+  background-color: var(--danger-muted);
+  border: 1px solid hsl(0, 60%, 88%);
   color: var(--danger);
   display: flex;
   align-items: center;

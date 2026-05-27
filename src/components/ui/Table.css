@@ -1,11 +1,10 @@
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .custom-table {
@@ -42,6 +41,6 @@
 }
 
 .custom-table tbody tr:hover {
-  background-color: var(--bg-elevated);
+  background-color: var(--bg-tertiary);
   cursor: pointer;
 }
