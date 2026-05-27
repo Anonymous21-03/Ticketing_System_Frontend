@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { teamApi } from '../services/teamApi';
 import Table from '../components/ui/Table';
 import Badge from '../components/ui/Badge';
@@ -9,11 +10,12 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import EmptyState from '../components/ui/EmptyState';
 import CreateTeamModal from '../components/CreateTeamModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
-import { Network, Search, Edit2, Trash2, ShieldCheck } from 'lucide-react';
+import { Network, Search, Edit2, Trash2, ShieldCheck, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './TeamList.css';
 
 export default function TeamList() {
+  const navigate = useNavigate();
   const [teams, setTeams] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -145,6 +147,13 @@ export default function TeamList() {
                   </td>
                   <td>
                     <div className="row-action-buttons">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        icon={Eye}
+                        onClick={() => navigate(`/teams/${t.id}`)}
+                        title="View Team Profile"
+                      />
                       <Button
                         variant="secondary"
                         size="sm"

@@ -15,6 +15,7 @@ import TicketList from './pages/TicketList';
 import TicketDetail from './pages/TicketDetail';
 import UserList from './pages/UserList';
 import TeamList from './pages/TeamList';
+import TeamDetail from './pages/TeamDetail';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 
@@ -57,6 +58,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <TeamList />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="teams/:id"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <TeamDetail />
                 </ProtectedRoute>
               }
             />

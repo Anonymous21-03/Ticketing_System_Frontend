@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ticketApi } from '../services/ticketApi';
 import { commentApi } from '../services/commentApi';
 import { teamApi } from '../services/teamApi';
 import { userApi } from '../services/userApi';
+import { attachmentApi } from '../services/attachmentApi';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -12,7 +13,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import {
   Calendar, User, ShieldAlert, ArrowLeft, Trash2, Edit3, MessageSquare,
-  History, Send, Trash, Edit, Check, X, ShieldCheck
+  History, Send, Trash, Edit, Check, X, ShieldCheck, Paperclip, Download, FileText, RefreshCw
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './TicketDetail.css';
@@ -27,6 +28,7 @@ export default function TicketDetail() {
   const [ticket, setTicket] = useState(null);
   const [comments, setComments] = useState([]);
   const [history, setHistory] = useState([]);
+  const [attachments, setAttachments] = useState([]);
   const [teams, setTeams] = useState([]);
   const [agents, setAgents] = useState([]);
 
@@ -34,9 +36,10 @@ export default function TicketDetail() {
   const [loading, setLoading] = useState(true);
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [attachmentsLoading, setAttachmentsLoading] = useState(false);
 
   // Tabs
-  const [activeTab, setActiveTab] = useState('comments'); // 'comments' | 'history'
+  const [activeTab, setActiveTab] = useState('comments'); // 'comments' | 'history' | 'attachments'
 
   // Edit Ticket Info
   const [isEditingInfo, setIsEditingInfo] = useState(false);
@@ -57,6 +60,13 @@ export default function TicketDetail() {
   const [deleteCommentId, setDeleteCommentId] = useState(null);
   const [deleteCommentLoading, setDeleteCommentLoading] = useState(false);
 
+  // Attachments State
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Reactivate Loading
+  const [reactivateLoading, setReactivateLoading] = useState(false);
+
   useEffect(() => {
     loadTicketData();
   }, [id]);
@@ -69,9 +79,10 @@ export default function TicketDetail() {
       setEditTitle(ticketData.title);
       setEditDescription(ticketData.description);
 
-      // Load comments & history in parallel
+      // Load comments & history & attachments in parallel
       fetchComments();
       fetchHistory();
+      fetchAttachments();
 
       // If user is Admin, load all teams & user options globally
       if (isAdmin) {
@@ -133,6 +144,79 @@ export default function TicketDetail() {
       toast.error('Failed to fetch history logs.');
     } finally {
       setHistoryLoading(false);
+    }
+  };
+
+  const fetchAttachments = async () => {
+    setAttachmentsLoading(true);
+    try {
+      const data = await attachmentApi.getAttachments(ticketId);
+      setAttachments(data || []);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to fetch attachments.');
+    } finally {
+      setAttachmentsLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check size limit (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File size must be under 10MB');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      // 1. Get Presigned URL
+      const presignData = await attachmentApi.presignUpload(ticketId, {
+        filename: file.name,
+        content_type: file.type
+      });
+
+      // 2. Upload file to S3 directly
+      const uploadRes = await fetch(presignData.upload_url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+        },
+        body: file,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error('Failed to upload file to storage provider');
+      }
+
+      // 3. Confirm upload
+      await attachmentApi.confirmUpload(ticketId, presignData.attachment_id);
+      toast.success('File attached successfully!');
+      fetchAttachments();
+      fetchHistory();
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.detail || err.message || 'Failed to upload attachment.');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleDeleteAttachment = async (attachmentId) => {
+    if (!window.confirm('Are you sure you want to delete this attachment?')) return;
+    try {
+      await attachmentApi.deleteAttachment(ticketId, attachmentId);
+      toast.success('Attachment deleted.');
+      fetchAttachments();
+      fetchHistory();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to delete attachment.');
     }
   };
 
@@ -207,6 +291,21 @@ export default function TicketDetail() {
     }
   };
 
+  const handleReactivateTicket = async () => {
+    if (!window.confirm('Are you sure you want to reactivate this ticket?')) return;
+    setReactivateLoading(true);
+    try {
+      await ticketApi.reactivateTicket(ticketId);
+      toast.success('Ticket reactivated successfully.');
+      loadTicketData();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to reactivate ticket.');
+    } finally {
+      setReactivateLoading(false);
+    }
+  };
+
   // Comment Handlers
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -276,14 +375,21 @@ export default function TicketDetail() {
         </Button>
 
         <div className="navigation-actions">
-          {canEditInfo && !isEditingInfo && (
+          {!ticket.is_active && isAdmin && (
+            <Button variant="primary" size="sm" icon={RefreshCw} onClick={handleReactivateTicket} loading={reactivateLoading}>
+              Reactivate Ticket
+            </Button>
+          )}
+          {canEditInfo && !isEditingInfo && ticket.is_active && (
             <Button variant="secondary" size="sm" icon={Edit3} onClick={() => setIsEditingInfo(true)}>
               Edit Info
             </Button>
           )}
-          <Button variant="danger" size="sm" icon={Trash2} onClick={() => setDeleteTicketOpen(true)}>
-            Delete Ticket
-          </Button>
+          {ticket.is_active && (
+            <Button variant="danger" size="sm" icon={Trash2} onClick={() => setDeleteTicketOpen(true)}>
+              Delete Ticket
+            </Button>
+          )}
         </div>
       </div>
 
@@ -340,6 +446,13 @@ export default function TicketDetail() {
             >
               <MessageSquare size={16} />
               <span>Comments ({comments.length})</span>
+            </button>
+            <button
+              className={`tab-btn ${activeTab === 'attachments' ? 'active' : ''}`}
+              onClick={() => setActiveTab('attachments')}
+            >
+              <Paperclip size={16} />
+              <span>Attachments ({attachments.length})</span>
             </button>
             <button
               className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
@@ -445,6 +558,62 @@ export default function TicketDetail() {
                 ) : (
                   <div className="empty-thread-state">
                     <p>No comments on this ticket yet.</p>
+                  </div>
+                )}
+              </div>
+            ) : activeTab === 'attachments' ? (
+              /* Attachments Pane */
+              <div className="attachments-pane">
+                <div className="attachment-upload-box glass-card">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    style={{ display: 'none' }}
+                    accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
+                  />
+                  <Button
+                    variant="primary"
+                    icon={Paperclip}
+                    onClick={() => fileInputRef.current?.click()}
+                    loading={uploading}
+                  >
+                    Upload File
+                  </Button>
+                  <span className="upload-help-text">Max 10MB. Images and PDFs allowed.</span>
+                </div>
+
+                {attachmentsLoading ? (
+                  <LoadingSpinner message="Fetching attachments..." />
+                ) : attachments.length > 0 ? (
+                  <div className="attachments-list">
+                    {attachments.map((file) => (
+                      <div key={file.id} className="attachment-item glass-card">
+                        <div className="attachment-icon">
+                          {file.content_type.startsWith('image/') ? <Paperclip size={24} /> : <FileText size={24} />}
+                        </div>
+                        <div className="attachment-info">
+                          <span className="attachment-name">{file.filename}</span>
+                          <span className="attachment-meta">
+                            {file.uploaded_by_username} • {new Date(file.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="attachment-actions">
+                          <a href={file.download_url} target="_blank" rel="noopener noreferrer" className="btn-icon">
+                            <Download size={18} />
+                          </a>
+                          {(file.uploaded_by === user.id || isAdmin) && (
+                            <button onClick={() => handleDeleteAttachment(file.id)} className="btn-icon text-danger">
+                              <Trash size={18} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-thread-state">
+                    <p>No attachments uploaded yet.</p>
                   </div>
                 )}
               </div>

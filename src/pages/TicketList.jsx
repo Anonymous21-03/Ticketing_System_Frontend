@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { ticketApi } from '../services/ticketApi';
 import SearchFilter from '../components/ui/SearchFilter';
 import Table from '../components/ui/Table';
@@ -9,11 +10,12 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import EmptyState from '../components/ui/EmptyState';
 import CreateTicketModal from '../components/CreateTicketModal';
 import Button from '../components/ui/Button';
-import { PlusCircle, Ticket, Calendar, User, ShieldAlert } from 'lucide-react';
+import { PlusCircle, Ticket, ArrowUp, ArrowDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './TicketList.css';
 
 export default function TicketList() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -28,13 +30,14 @@ export default function TicketList() {
   const status = searchParams.get('status') || '';
   const priority = searchParams.get('priority') || '';
   const page = parseInt(searchParams.get('page') || '1');
+  const activeTab = searchParams.get('tab') || 'all';
+  const sort_by = searchParams.get('sort_by') || 'created_at';
+  const order = searchParams.get('order') || 'desc';
   const limit = 10;
 
-  // Sync create param from Dashboard shortcuts
   useEffect(() => {
     if (searchParams.get('create') === 'true') {
       setCreateOpen(true);
-      // Clean up param
       const newParams = new URLSearchParams(searchParams);
       newParams.delete('create');
       setSearchParams(newParams);
@@ -43,7 +46,7 @@ export default function TicketList() {
 
   useEffect(() => {
     fetchTickets();
-  }, [q, status, priority, page]);
+  }, [q, status, priority, page, activeTab, sort_by, order]);
 
   const fetchTickets = async () => {
     setLoading(true);
@@ -52,15 +55,29 @@ export default function TicketList() {
       const params = {
         limit,
         offset,
-        sort_by: 'created_at',
-        order: 'desc'
+        sort_by,
+        order
       };
 
       if (q) params.search = q;
       if (status) params.status = status;
       if (priority) params.priority = priority;
 
-      const data = await ticketApi.getTickets(params);
+      let data;
+      if (activeTab === 'assigned') {
+        data = await ticketApi.getAssignedToMe(params);
+      } else if (activeTab === 'created') {
+        data = await ticketApi.getCreatedByMe(params);
+      } else if (activeTab === 'team') {
+        if (user?.team_id) {
+          data = await ticketApi.getTeamTickets(user.team_id, params);
+        } else {
+          data = { items: [], total: 0 };
+        }
+      } else {
+        data = await ticketApi.getTickets(params);
+      }
+
       setTickets(data.items || []);
       setTotal(data.total || 0);
     } catch (err) {
@@ -72,22 +89,65 @@ export default function TicketList() {
   };
 
   const handleFilterChange = (newFilters) => {
-    const nextParams = new URLSearchParams();
+    const nextParams = new URLSearchParams(searchParams);
     if (newFilters.q) nextParams.set('q', newFilters.q);
+    else nextParams.delete('q');
+    
     if (newFilters.status) nextParams.set('status', newFilters.status);
+    else nextParams.delete('status');
+    
     if (newFilters.priority) nextParams.set('priority', newFilters.priority);
-    nextParams.set('page', '1'); // reset to page 1
+    else nextParams.delete('priority');
+    
+    nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
 
   const handleResetFilters = () => {
-    setSearchParams({});
+    const nextParams = new URLSearchParams();
+    nextParams.set('tab', activeTab);
+    setSearchParams(nextParams);
   };
 
   const handlePageChange = (newPage) => {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set('page', newPage.toString());
     setSearchParams(nextParams);
+  };
+
+  const handleTabChange = (tab) => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('tab', tab);
+    nextParams.set('page', '1');
+    setSearchParams(nextParams);
+  };
+
+  const handleSort = (field) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (sort_by === field) {
+      nextParams.set('order', order === 'asc' ? 'desc' : 'asc');
+    } else {
+      nextParams.set('sort_by', field);
+      nextParams.set('order', 'asc');
+    }
+    setSearchParams(nextParams);
+  };
+
+  const SortableHeader = ({ field, label }) => {
+    const isActive = sort_by === field;
+    return (
+      <div 
+        className="sortable-header" 
+        onClick={() => handleSort(field)}
+      >
+        <span>{label}</span>
+        {isActive && (
+          <span className="sort-icon">
+            {order === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+          </span>
+        )}
+      </div>
+    );
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -104,6 +164,15 @@ export default function TicketList() {
         </Button>
       </div>
 
+      <div className="ticket-tabs">
+        <button className={`ticket-tab ${activeTab === 'all' ? 'active' : ''}`} onClick={() => handleTabChange('all')}>All Tickets</button>
+        <button className={`ticket-tab ${activeTab === 'assigned' ? 'active' : ''}`} onClick={() => handleTabChange('assigned')}>Assigned to Me</button>
+        <button className={`ticket-tab ${activeTab === 'created' ? 'active' : ''}`} onClick={() => handleTabChange('created')}>Created by Me</button>
+        {user?.team_id && (
+          <button className={`ticket-tab ${activeTab === 'team' ? 'active' : ''}`} onClick={() => handleTabChange('team')}>Team Tickets</button>
+        )}
+      </div>
+
       <SearchFilter
         filters={{ q, status, priority }}
         onChange={handleFilterChange}
@@ -118,13 +187,13 @@ export default function TicketList() {
             <Table
               headers={[
                 'ID',
-                'Title',
-                'Priority',
-                'Status',
+                <SortableHeader field="title" label="Title" />,
+                <SortableHeader field="priority" label="Priority" />,
+                <SortableHeader field="status" label="Status" />,
                 'Team',
                 'Assigned Agent',
                 'Created By',
-                'Created At'
+                <SortableHeader field="created_at" label="Created At" />
               ]}
             >
               {tickets.map((t) => (
