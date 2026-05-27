@@ -2,7 +2,7 @@
 
 A simple, responsive, and easy-to-use Ticketing and Incident Management dashboard. Built with React 19, Vite, and Vanilla CSS, this application provides a clean interface for tracking support tickets, assigning them to teams, viewing basic analytics, and managing users.
 
-Live Demo: [https://ticketing-system-frontend-8tzpolizj-anonymous21-03s-projects.vercel.app](https://ticketing-system-frontend-8tzpolizj-anonymous21-03s-projects.vercel.app)
+Live Demo: [https://ticketing-system-frontend-lilac.vercel.app/](https://ticketing-system-frontend-lilac.vercel.app/)
 
 Backend API Repo: [https://github.com/Anonymous21-03/Ticketing_System_Backend](https://github.com/Anonymous21-03/Ticketing_System_Backend)
 
