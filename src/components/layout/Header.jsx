@@ -180,6 +180,42 @@ export default function Header({ onMenuClick }) {
               link: `/tickets/${ticket.id}`
             });
           }
+          // If agent assigned
+          if (user.role === 'agent' && (ticket.status === 'open' || ticket.status === 'in_progress')) {
+            dynamicList.push({
+              id: `assigned-${ticket.id}`,
+              title: 'New Ticket Assigned',
+              description: `You have been assigned to Ticket #${ticket.id}: "${ticket.title}".`,
+              type: 'assignment',
+              unread: true,
+              timestamp: 'Recently',
+              link: `/tickets/${ticket.id}`
+            });
+          }
+          // If admin unassigned open ticket
+          if (user.role === 'admin' && ticket.status === 'open' && (!ticket.assigned_to || ticket.assigned_to === -1)) {
+            dynamicList.push({
+              id: `unassigned-${ticket.id}`,
+              title: 'Unassigned Ticket',
+              description: `Ticket #${ticket.id} ("${ticket.title}") requires agent assignment.`,
+              type: 'assignment',
+              unread: true,
+              timestamp: 'Recently',
+              link: `/tickets/${ticket.id}`
+            });
+          }
+          // If employee ticket in progress
+          if (user.role === 'employee' && ticket.status === 'in_progress') {
+            dynamicList.push({
+              id: `in-progress-${ticket.id}`,
+              title: 'Ticket In Progress',
+              description: `Your Ticket #${ticket.id} ("${ticket.title}") is now being processed.`,
+              type: 'info',
+              unread: true,
+              timestamp: 'Recently',
+              link: `/tickets/${ticket.id}`
+            });
+          }
         });
 
         // Merge dynamic notifications into list, putting them at the beginning.
