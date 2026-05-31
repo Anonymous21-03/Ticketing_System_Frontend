@@ -63,11 +63,7 @@ export default function App() {
             />
             <Route
               path="teams/:id"
-              element={
-                <ProtectedRoute allowedRoles={['admin']}>
-                  <TeamDetail />
-                </ProtectedRoute>
-              }
+              element={<TeamDetail />}
             />
           </Route>
 

@@ -152,6 +152,26 @@ export default function TicketList() {
 
   const totalPages = Math.ceil(total / limit);
 
+  // SLA helper: returns a friendly label for the SLA status
+  const getSlaInfo = (ticket) => {
+    if (ticket.sla_breached) return { label: 'Breached', variant: 'breached' };
+    const isActive = ticket.status === 'open' || ticket.status === 'in_progress';
+    if (!isActive) return { label: 'On Track', variant: 'on_track' };
+    if (!ticket.due_at) return { label: '—', variant: 'on_track' };
+    const now = new Date();
+    const due = new Date(ticket.due_at);
+    const diff = due - now;
+    if (diff <= 0) return { label: 'Breached', variant: 'breached' };
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    if (hours >= 24) {
+      const days = Math.floor(hours / 24);
+      return { label: `${days}d ${hours % 24}h left`, variant: 'within_sla' };
+    }
+    if (hours > 0) return { label: `${hours}h ${minutes}m left`, variant: 'within_sla' };
+    return { label: `${minutes}m left`, variant: 'within_sla' };
+  };
+
   return (
     <div className="ticket-list-container">
       <div className="list-header">
@@ -190,6 +210,7 @@ export default function TicketList() {
                 <SortableHeader field="title" label="Title" />,
                 <SortableHeader field="priority" label="Priority" />,
                 <SortableHeader field="status" label="Status" />,
+                'SLA',
                 'Team',
                 'Assigned Agent',
                 'Created By',
@@ -205,6 +226,12 @@ export default function TicketList() {
                   </td>
                   <td>
                     <Badge variant={t.status}>{t.status}</Badge>
+                  </td>
+                  <td>
+                    {(() => {
+                      const sla = getSlaInfo(t);
+                      return <Badge variant={sla.variant}>{sla.label}</Badge>;
+                    })()}
                   </td>
                   <td className="text-secondary truncate">
                     {t.team_name || <span className="unassigned-lbl">Unassigned</span>}

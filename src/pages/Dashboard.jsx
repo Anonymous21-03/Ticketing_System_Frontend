@@ -6,13 +6,14 @@ import { userApi } from '../services/userApi';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 import {
   Ticket, Users, Network, Clock, CheckCircle2, AlertCircle,
-  PlusCircle, UserCheck, ArrowRight
+  PlusCircle, UserCheck, ArrowRight, AlertTriangle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -26,6 +27,10 @@ export default function Dashboard() {
   const [tickets, setTickets] = useState([]);
   const [usersCount, setUsersCount] = useState(0);
   const [teamsCount, setTeamsCount] = useState(0);
+
+  // Admin team filter
+  const [allTeams, setAllTeams] = useState([]);
+  const [selectedTeamId, setSelectedTeamId] = useState('');
 
   // Modal control for quick ticket creation
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -47,16 +52,32 @@ export default function Dashboard() {
 
       if (isAdmin) {
         // Fetch users & teams count (Admin only)
-        const usersData = await userApi.getUsers({ limit: 1 });
-        const teamsData = await teamApi.getTeams({ limit: 1 });
+        const [usersData, teamsData] = await Promise.all([
+          userApi.getUsers({ limit: 1 }),
+          teamApi.getTeams({ limit: 100 })
+        ]);
         setUsersCount(usersData.total || 0);
         setTeamsCount(teamsData.total || 0);
+        setAllTeams(teamsData.items || []);
       }
     } catch (err) {
       console.error(err);
       toast.error('Failed to load dashboard statistics.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Admin: refresh stats when team filter changes
+  const handleTeamFilterChange = async (teamId) => {
+    setSelectedTeamId(teamId);
+    try {
+      const parsedId = teamId ? parseInt(teamId) : undefined;
+      const statsData = await ticketApi.getStats(parsedId);
+      setStats(statsData);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to refresh stats for selected team.');
     }
   };
 
@@ -102,15 +123,30 @@ export default function Dashboard() {
           <h2 className="page-title">Welcome back, {user?.username}!</h2>
           <p className="page-subtitle">Here is what is happening with the ticket queue today.</p>
         </div>
-        {isEmployee && (
-          <Button
-            variant="primary"
-            icon={PlusCircle}
-            onClick={() => navigate('/tickets?create=true')}
-          >
-            Create Ticket
-          </Button>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {isAdmin && allTeams.length > 0 && (
+            <Input
+              type="select"
+              value={selectedTeamId}
+              onChange={(e) => handleTeamFilterChange(e.target.value)}
+              className="team-filter-select"
+            >
+              <option value="">All Teams</option>
+              {allTeams.map((t) => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </Input>
+          )}
+          {isEmployee && (
+            <Button
+              variant="primary"
+              icon={PlusCircle}
+              onClick={() => navigate('/tickets?create=true')}
+            >
+              Create Ticket
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* ── Admin Dashboard ── */}
@@ -156,6 +192,16 @@ export default function Dashboard() {
               <div className="stat-info">
                 <span className="stat-label">Total Users</span>
                 <span className="stat-value">{usersCount}</span>
+              </div>
+            </div>
+
+            <div className="stat-card glass-card">
+              <div className="stat-icon-wrapper" style={{ color: 'hsl(0, 70%, 50%)' }}>
+                <AlertTriangle size={24} />
+              </div>
+              <div className="stat-info">
+                <span className="stat-label">SLA Breaches</span>
+                <span className="stat-value">{stats?.sla_breached || 0}</span>
               </div>
             </div>
           </div>
@@ -275,6 +321,16 @@ export default function Dashboard() {
               </span>
             </div>
           </div>
+
+          <div className="stat-card glass-card">
+            <div className="stat-icon-wrapper" style={{ color: 'hsl(0, 70%, 50%)' }}>
+              <AlertTriangle size={24} />
+            </div>
+            <div className="stat-info">
+              <span className="stat-label">SLA Breaches</span>
+              <span className="stat-value">{stats?.sla_breached || 0}</span>
+            </div>
+          </div>
         </div>
       )}
 
@@ -308,6 +364,16 @@ export default function Dashboard() {
             <div className="stat-info">
               <span className="stat-label">Closed / Resolved</span>
               <span className="stat-value">{stats?.resolved || 0}</span>
+            </div>
+          </div>
+
+          <div className="stat-card glass-card">
+            <div className="stat-icon-wrapper" style={{ color: 'hsl(0, 70%, 50%)' }}>
+              <AlertTriangle size={24} />
+            </div>
+            <div className="stat-info">
+              <span className="stat-label">SLA Breaches</span>
+              <span className="stat-value">{stats?.sla_breached || 0}</span>
             </div>
           </div>
         </div>

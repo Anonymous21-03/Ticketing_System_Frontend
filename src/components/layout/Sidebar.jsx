@@ -19,6 +19,10 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
     { to: '/tickets', label: 'Tickets', icon: Ticket, roles: ['admin', 'agent', 'employee'] },
     { to: '/users', label: 'Users', icon: Users, roles: ['admin'] },
     { to: '/teams', label: 'Teams', icon: Network, roles: ['admin'] },
+    // Dynamic "My Team" link for non-admins who belong to a team
+    ...(user?.team_id && user?.role !== 'admin'
+      ? [{ to: `/teams/${user.team_id}`, label: 'My Team', icon: Network, roles: ['agent', 'employee'] }]
+      : []),
     { to: '/profile', label: 'Profile', icon: User, roles: ['admin', 'agent', 'employee'] },
   ];
 

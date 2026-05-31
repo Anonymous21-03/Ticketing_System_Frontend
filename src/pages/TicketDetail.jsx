@@ -13,7 +13,8 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import {
   Calendar, User, ShieldAlert, ArrowLeft, Trash2, Edit3, MessageSquare,
-  History, Send, Trash, Edit, Check, X, ShieldCheck, Paperclip, Download, FileText, RefreshCw
+  History, Send, Trash, Edit, Check, X, ShieldCheck, Paperclip, Download, FileText, RefreshCw,
+  AlertTriangle, Clock
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './TicketDetail.css';
@@ -360,11 +361,48 @@ export default function TicketDetail() {
     return <LoadingSpinner message="Opening ticket file..." />;
   }
 
-  // Permissions helpers
   const canModifyMeta = isAdmin || isAgent;
   const isCreator = ticket.created_by === user.id;
   const isOpenStatus = ticket.status === 'open';
   const canEditInfo = isAdmin || isAgent || (isCreator && isOpenStatus);
+
+  // SLA helper
+  const getSlaInfo = () => {
+    if (ticket.sla_breached) return { label: 'SLA Breached', variant: 'breached' };
+    const isActive = ticket.status === 'open' || ticket.status === 'in_progress';
+    if (!isActive) return { label: 'Completed On Time', variant: 'on_track' };
+    if (!ticket.due_at) return { label: '—', variant: 'on_track' };
+    const now = new Date();
+    const due = new Date(ticket.due_at);
+    const diff = due - now;
+    if (diff <= 0) return { label: 'SLA Breached', variant: 'breached' };
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    if (hours >= 24) {
+      const days = Math.floor(hours / 24);
+      return { label: `${days}d ${hours % 24}h remaining`, variant: 'within_sla' };
+    }
+    if (hours > 0) return { label: `${hours}h ${minutes}m remaining`, variant: 'within_sla' };
+    return { label: `${minutes}m remaining`, variant: 'within_sla' };
+  };
+
+  const slaInfo = getSlaInfo();
+
+  // Filter agents by the ticket's current team
+  const filteredAgents = ticket.team_id
+    ? agents.filter(a => a.team_id === ticket.team_id)
+    : agents;
+
+  // Download attachment with fresh presigned URL
+  const handleDownloadAttachment = async (attachmentId) => {
+    try {
+      const data = await attachmentApi.getDownloadUrl(ticketId, attachmentId);
+      window.open(data.download_url, '_blank');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to get download link.');
+    }
+  };
 
   return (
     <div className="ticket-detail-container">
@@ -599,9 +637,9 @@ export default function TicketDetail() {
                           </span>
                         </div>
                         <div className="attachment-actions">
-                          <a href={file.download_url} target="_blank" rel="noopener noreferrer" className="btn-icon">
+                          <button onClick={() => handleDownloadAttachment(file.id)} className="btn-icon" title="Download">
                             <Download size={18} />
-                          </a>
+                          </button>
                           {(file.uploaded_by === user.id || isAdmin) && (
                             <button onClick={() => handleDeleteAttachment(file.id)} className="btn-icon text-danger">
                               <Trash size={18} />
@@ -720,6 +758,22 @@ export default function TicketDetail() {
                 )}
               </div>
 
+              {/* SLA STATUS */}
+              <div className="meta-property-row">
+                <span className="property-label">SLA Status</span>
+                <Badge variant={slaInfo.variant}>{slaInfo.label}</Badge>
+              </div>
+
+              {/* SLA DUE DATE */}
+              {ticket.due_at && (
+                <div className="meta-property-row">
+                  <span className="property-label">SLA Deadline</span>
+                  <span className="property-value" style={{ fontSize: '0.8rem' }}>
+                    {new Date(ticket.due_at).toLocaleString()}
+                  </span>
+                </div>
+              )}
+
               {/* TEAM ASSIGNMENT */}
               <div className="meta-property-row">
                 <span className="property-label">Team</span>
@@ -751,7 +805,7 @@ export default function TicketDetail() {
                     onChange={(e) => handleFieldChange('assigned_to', e.target.value)}
                   >
                     <option value="">Unassigned</option>
-                    {agents.map((a) => (
+                    {filteredAgents.map((a) => (
                       <option key={a.id} value={a.id}>
                         {a.username}
                       </option>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { userApi } from '../services/userApi';
 import { teamApi } from '../services/teamApi';
+import { ticketApi } from '../services/ticketApi';
 import Table from '../components/ui/Table';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
@@ -8,14 +10,16 @@ import Input from '../components/ui/Input';
 import Pagination from '../components/ui/Pagination';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import EmptyState from '../components/ui/EmptyState';
+import Modal from '../components/ui/Modal';
 import CreateUserModal from '../components/CreateUserModal';
 import ResetPasswordModal from '../components/ResetPasswordModal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
-import { UserPlus, Search, Edit2, Key, Trash2, ShieldCheck, XCircle } from 'lucide-react';
+import { UserPlus, Search, Edit2, Key, Trash2, ShieldCheck, Ticket, ArrowUp, ArrowDown } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './UserList.css';
 
 export default function UserList() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [teams, setTeams] = useState([]);
   const [total, setTotal] = useState(0);
@@ -24,7 +28,11 @@ export default function UserList() {
   // Filters State
   const [q, setQ] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
+  const [teamFilter, setTeamFilter] = useState('');
+  const [activeFilter, setActiveFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState('created_at');
+  const [order, setOrder] = useState('desc');
   const limit = 10;
 
   // Modals state
@@ -40,10 +48,15 @@ export default function UserList() {
   const [reactivateConfirmUser, setReactivateConfirmUser] = useState(null);
   const [reactivateLoading, setReactivateLoading] = useState(false);
 
+  // Assigned Tickets Modal
+  const [assignedTicketsUser, setAssignedTicketsUser] = useState(null);
+  const [assignedTickets, setAssignedTickets] = useState([]);
+  const [assignedTicketsLoading, setAssignedTicketsLoading] = useState(false);
+
   useEffect(() => {
     fetchUsers();
     loadTeams();
-  }, [q, roleFilter, page]);
+  }, [q, roleFilter, teamFilter, activeFilter, page, sortBy, order]);
 
   const loadTeams = async () => {
     try {
@@ -58,9 +71,11 @@ export default function UserList() {
     setLoading(true);
     try {
       const offset = (page - 1) * limit;
-      const params = { limit, offset };
+      const params = { limit, offset, sort_by: sortBy, order };
       if (q) params.search = q;
       if (roleFilter) params.role = roleFilter;
+      if (teamFilter) params.team_id = parseInt(teamFilter);
+      if (activeFilter !== '') params.is_active = activeFilter === 'true';
 
       const data = await userApi.getUsers(params);
       setUsers(data.items || []);
@@ -105,9 +120,49 @@ export default function UserList() {
     }
   };
 
+  const handleViewAssignedTickets = async (u) => {
+    setAssignedTicketsUser(u);
+    setAssignedTicketsLoading(true);
+    try {
+      const data = await ticketApi.getUserAssigned(u.id, { limit: 50 });
+      setAssignedTickets(data.items || []);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to load assigned tickets.');
+    } finally {
+      setAssignedTicketsLoading(false);
+    }
+  };
+
   const getTeamName = (teamId) => {
     const t = teams.find((x) => x.id === teamId);
     return t ? t.name : '—';
+  };
+
+  const handleSort = (field) => {
+    if (sortBy === field) {
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(field);
+      setOrder('asc');
+    }
+  };
+
+  const SortableHeader = ({ field, label }) => {
+    const isActive = sortBy === field;
+    return (
+      <div
+        className="sortable-header"
+        onClick={() => handleSort(field)}
+      >
+        <span>{label}</span>
+        {isActive && (
+          <span className="sort-icon">
+            {order === 'asc' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+          </span>
+        )}
+      </div>
+    );
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -159,6 +214,36 @@ export default function UserList() {
           <option value="agent">Agent</option>
           <option value="employee">Employee</option>
         </Input>
+
+        <Input
+          type="select"
+          value={teamFilter}
+          onChange={(e) => {
+            setTeamFilter(e.target.value);
+            setPage(1);
+          }}
+          className="role-select"
+        >
+          <option value="">All Teams</option>
+          <option value="0">Unassigned</option>
+          {teams.map((t) => (
+            <option key={t.id} value={t.id}>{t.name}</option>
+          ))}
+        </Input>
+
+        <Input
+          type="select"
+          value={activeFilter}
+          onChange={(e) => {
+            setActiveFilter(e.target.value);
+            setPage(1);
+          }}
+          className="role-select"
+        >
+          <option value="">All Status</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </Input>
       </div>
 
       {loading ? (
@@ -166,7 +251,16 @@ export default function UserList() {
       ) : users.length > 0 ? (
         <>
           <div className="table-responsive">
-            <Table headers={['ID', 'Name', 'Username', 'Email', 'Role', 'Assigned Team', 'Status', 'Actions']}>
+            <Table headers={[
+              'ID',
+              <SortableHeader field="name" label="Name" />,
+              <SortableHeader field="username" label="Username" />,
+              <SortableHeader field="email" label="Email" />,
+              <SortableHeader field="role" label="Role" />,
+              'Assigned Team',
+              'Status',
+              'Actions'
+            ]}>
               {users.map((u) => (
                 <tr key={u.id}>
                   <td style={{ fontFamily: 'monospace', color: 'var(--text-tertiary)' }}>#{u.id}</td>
@@ -184,6 +278,13 @@ export default function UserList() {
                   </td>
                   <td>
                     <div className="row-action-buttons">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        icon={Ticket}
+                        onClick={() => handleViewAssignedTickets(u)}
+                        title="View Assigned Tickets"
+                      />
                       <Button
                         variant="secondary"
                         size="sm"
@@ -274,6 +375,58 @@ export default function UserList() {
         variant="info"
         loading={reactivateLoading}
       />
+
+      {/* Assigned Tickets Modal */}
+      <Modal
+        isOpen={assignedTicketsUser !== null}
+        onClose={() => {
+          setAssignedTicketsUser(null);
+          setAssignedTickets([]);
+        }}
+        title={`Tickets Assigned to ${assignedTicketsUser?.username || ''}`}
+        size="lg"
+      >
+        {assignedTicketsLoading ? (
+          <LoadingSpinner message="Loading assigned tickets..." />
+        ) : assignedTickets.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '400px', overflowY: 'auto' }}>
+            {assignedTickets.map((t) => (
+              <div
+                key={t.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.75rem 1rem',
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  flexWrap: 'wrap',
+                  gap: '0.5rem',
+                }}
+                onClick={() => navigate(`/tickets/${t.id}`)}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-tertiary)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-secondary)'; }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: '200px' }}>
+                  <span style={{ fontFamily: 'monospace', color: 'var(--text-tertiary)', fontWeight: 600, fontSize: '0.85rem' }}>#{t.id}</span>
+                  <span style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: '0.9rem' }} className="truncate">{t.title}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Badge variant={t.priority}>{t.priority}</Badge>
+                  <Badge variant={t.status}>{t.status}</Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-tertiary)' }}>
+            <p>No tickets currently assigned to this user.</p>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

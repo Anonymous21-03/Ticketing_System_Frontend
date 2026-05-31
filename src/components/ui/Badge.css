@@ -83,6 +83,37 @@
   border-color: hsl(200, 60%, 84%);
 }
 
+/* SLA Status */
+.badge-breached {
+  background: hsl(0, 75%, 94%);
+  color: hsl(0, 70%, 38%);
+  border-color: hsl(0, 70%, 80%);
+  animation: pulse-border-breach 2s infinite ease-in-out;
+}
+
+.badge-within_sla {
+  background: hsl(160, 55%, 92%);
+  color: hsl(160, 60%, 30%);
+  border-color: hsl(160, 50%, 78%);
+}
+
+.badge-on_track {
+  background: hsl(210, 60%, 93%);
+  color: hsl(210, 60%, 38%);
+  border-color: hsl(210, 55%, 82%);
+}
+
+@keyframes pulse-border-breach {
+  0%, 100% {
+    border-color: hsl(0, 70%, 80%);
+    box-shadow: 0 0 0 0 hsla(0, 70%, 50%, 0.05);
+  }
+  50% {
+    border-color: hsl(0, 70%, 60%);
+    box-shadow: 0 0 6px 1px hsla(0, 70%, 50%, 0.15);
+  }
+}
+
 @keyframes pulse-border {
   0%, 100% {
     border-color: hsl(340, 80%, 84%);

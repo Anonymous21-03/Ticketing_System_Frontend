@@ -28,6 +28,11 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }) {
     }
   }, [isOpen]);
 
+  // Reset agent selection when team changes
+  useEffect(() => {
+    setAssignedTo('');
+  }, [teamId]);
+
   const loadTeamsAndAgents = async () => {
     try {
       if (isAdmin) {
@@ -52,6 +57,11 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }) {
       toast.error('Failed to load teams or agents for assignment.');
     }
   };
+
+  // Filter agents by selected team
+  const filteredAgents = teamId
+    ? agents.filter(a => a.team_id === parseInt(teamId))
+    : agents;
 
   const validate = () => {
     const newErrors = {};
@@ -160,7 +170,7 @@ export default function CreateTicketModal({ isOpen, onClose, onSuccess }) {
               onChange={(e) => setAssignedTo(e.target.value)}
             >
               <option value="">Select Agent</option>
-              {agents.map((a) => (
+              {filteredAgents.map((a) => (
                 <option key={a.id} value={a.id}>
                   {a.username} ({a.role})
                 </option>

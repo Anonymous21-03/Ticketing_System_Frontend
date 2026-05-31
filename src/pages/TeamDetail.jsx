@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { teamApi } from '../services/teamApi';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import Badge from '../components/ui/Badge';
@@ -16,6 +17,7 @@ export default function TeamDetail() {
   const { id } = useParams();
   const teamId = parseInt(id);
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   const [team, setTeam] = useState(null);
   const [stats, setStats] = useState(null);
@@ -72,8 +74,8 @@ export default function TeamDetail() {
   return (
     <div className="team-detail-container">
       <div className="detail-navigation">
-        <Button variant="secondary" size="sm" icon={ArrowLeft} onClick={() => navigate('/teams')}>
-          Back to Teams
+        <Button variant="secondary" size="sm" icon={ArrowLeft} onClick={() => navigate(isAdmin ? '/teams' : '/dashboard')}>
+          {isAdmin ? 'Back to Teams' : 'Back to Dashboard'}
         </Button>
       </div>
 
@@ -92,8 +94,9 @@ export default function TeamDetail() {
         </Badge>
       </div>
 
-      <div className="team-grid">
-        {/* Statistics Pane */}
+      <div className="team-grid" style={!isAdmin ? { gridTemplateColumns: '1fr' } : undefined}>
+        {/* Statistics Pane (Admin only) */}
+        {isAdmin && (
         <div className="team-stats-pane glass-card">
           <h3 className="pane-title">Team Performance</h3>
           {stats ? (
@@ -151,6 +154,7 @@ export default function TeamDetail() {
             <div className="no-chart-data">Statistics not available.</div>
           )}
         </div>
+        )}
 
         {/* Roster Pane */}
         <div className="team-roster-pane glass-card">
