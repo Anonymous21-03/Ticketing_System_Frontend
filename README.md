@@ -11,21 +11,29 @@ Backend API Repo: [https://github.com/Anonymous21-03/Ticketing_System_Backend](h
 ## Features
 
 - **Dashboard and Analytics**:
-  - View key metrics like open, in-progress, resolved, and high-priority tickets.
+  - View key metrics like open, in-progress, resolved, high-priority, and SLA-breached tickets.
+  - Filter dashboard metrics and charts by specific Teams (Admin-only).
   - Interactive charts (using Recharts) to see ticket status, priority, and daily creation rates.
 - **Ticket Management**:
   - Search, filter, and page through support tickets.
+  - View SLA status badges ("Breached", "Within SLA", or remaining time indicators) and precise resolution deadlines (`due_at`).
   - Change ticket status (Open, In Progress, Resolved) and priority (Low, Medium, High).
   - Open a detailed ticket view to update assignees and post comments.
+  - Team-based agent filtering: Dropdown automatically restricts assignees to only those agents who belong to the selected team.
+  - Attachment management: Secure download requests using on-demand fresh presigned URLs to prevent token expiration.
 - **User Directory**:
-  - Manage users, assign roles (Admin vs. User), and reset passwords.
+  - Filter users by Team assignment and Active/Deactivated status.
+  - Sort directory dynamically by column headers (`name`, `username`, `email`, `role`, `created_at`, `updated_at`).
+  - View a popup modal list of all tickets currently assigned to any selected user.
+  - Create users, assign roles (Admin, Agent, Employee), and reset passwords.
 - **Team Management**:
   - Create and organize teams and departments.
+  - Role-scoped Team Detail: Admins view full charts and stats, while Agents and Employees can securely access the page to view their own team's member roster.
 - **Authentication**:
-  - Secure login with role-based routing.
+  - Secure login with role-based routing and a dynamic "My Team" sidebar link for agents/employees belonging to a team.
   - Keeps user logged in using secure token storage in localStorage.
 - **Modern Styling**:
-  - Sleek design using HSL colors, CSS variables, and responsive layouts.
+  - Sleek design using HSL colors, CSS variables, custom animations, and fully responsive layouts.
 
 ---
 
