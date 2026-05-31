@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
-import { Menu, User, Bell, AlertTriangle, UserPlus, MessageSquare, Info } from 'lucide-react';
+import { Menu, User, Bell, AlertTriangle, UserPlus, MessageSquare, Info, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { ticketApi } from '../../services/ticketApi';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 export default function Header({ onMenuClick }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const dropdownRef = useRef(null);
+  const profileDropdownRef = useRef(null);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -18,10 +20,22 @@ export default function Header({ onMenuClick }) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsProfileOpen(false);
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
 
   // Load and merge notifications
   useEffect(() => {
@@ -337,11 +351,34 @@ export default function Header({ onMenuClick }) {
 
         <div className="header-divider"></div>
 
-        <div className="header-user-info">
-          <span className="header-username">{user?.username}</span>
-          <span className="header-user-avatar">
-            <User size={16} />
-          </span>
+        <div className="header-user-wrapper" ref={profileDropdownRef}>
+          <button 
+            className={`header-user-info-btn ${isProfileOpen ? 'active' : ''}`}
+            onClick={() => {
+              setIsProfileOpen(!isProfileOpen);
+              setIsOpen(false); // Close notifications dropdown if open
+            }}
+            aria-label="User Profile Menu"
+          >
+            <span className="header-username">{user?.username}</span>
+            <span className="header-user-avatar">
+              <User size={16} />
+            </span>
+          </button>
+
+          {isProfileOpen && (
+            <div className="profile-dropdown">
+              <div className="profile-dropdown-header">
+                <p className="profile-name">{user?.username}</p>
+                <p className="profile-role">{user?.role}</p>
+              </div>
+              <div className="profile-dropdown-divider"></div>
+              <button className="profile-dropdown-item logout" onClick={handleLogout}>
+                <LogOut size={16} />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
