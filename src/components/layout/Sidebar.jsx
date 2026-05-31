@@ -1,11 +1,18 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, Ticket, Users, Network, X } from 'lucide-react';
+import { LayoutDashboard, Ticket, Users, Network, User, LogOut, X } from 'lucide-react';
 import './Sidebar.css';
 
 export default function Sidebar({ isOpen, toggleSidebar }) {
-  const { user, isAdmin } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
 
   const navItems = [
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'agent', 'employee'] },
@@ -66,6 +73,10 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
               </div>
             </div>
           )}
+          <button className="sidebar-logout-btn" onClick={handleLogout}>
+            <LogOut size={18} />
+            <span>Sign Out</span>
+          </button>
         </div>
       </aside>
     </>
