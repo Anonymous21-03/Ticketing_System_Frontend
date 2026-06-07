@@ -17,6 +17,7 @@ import {
   AlertTriangle, Clock
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useWebSocket } from '../hooks/useWebSocket';
 import './TicketDetail.css';
 
 export default function TicketDetail() {
@@ -24,6 +25,30 @@ export default function TicketDetail() {
   const ticketId = parseInt(id);
   const navigate = useNavigate();
   const { user, isAdmin, isAgent } = useAuth();
+
+  useWebSocket(async (payload) => {
+    if (payload.type === 'COMMENT_CREATED' && payload.data.ticket_id === ticketId) {
+      if (payload.data.comment.user_id !== user.id) {
+        fetchComments();
+        fetchHistory();
+        toast.success(`New comment from ${payload.data.comment.username}`);
+      }
+    } else if (payload.type === 'COMMENT_DELETED') {
+      fetchComments();
+      fetchHistory();
+    } else if (payload.type === 'TICKET_UPDATED' && payload.data.id === ticketId) {
+      try {
+        const ticketData = await ticketApi.getTicket(ticketId);
+        setTicket(ticketData);
+        setEditTitle(ticketData.title);
+        setEditDescription(ticketData.description);
+        fetchHistory();
+        toast.info("Ticket properties updated");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  });
 
   // Data State
   const [ticket, setTicket] = useState(null);

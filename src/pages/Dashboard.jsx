@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useWebSocket } from '../hooks/useWebSocket';
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -34,6 +35,17 @@ export default function Dashboard() {
 
   // Modal control for quick ticket creation
   const [createModalOpen, setCreateModalOpen] = useState(false);
+
+  useWebSocket((payload) => {
+    if (payload.type?.startsWith("TICKET_")) {
+      fetchDashboardData();
+      if (payload.type === "TICKET_CREATED") {
+        toast.success(`New ticket created: #${payload.data.id}`);
+      } else if (payload.type === "TICKET_UPDATED") {
+        toast.info(`Ticket #${payload.data.id} was updated`);
+      }
+    }
+  });
 
   useEffect(() => {
     fetchDashboardData();
