@@ -1,76 +1,114 @@
-# 🎫 Ticketing System Frontend
+# SupportFlow - Ticketing System Frontend
 
-A simple, responsive, and easy-to-use Ticketing and Incident Management dashboard. Built with React 19, Vite, and Vanilla CSS, this application provides a clean interface for tracking support tickets, assigning them to teams, viewing basic analytics, and managing users.
+A full-featured React dashboard for an internal help desk system. Features role-based views for Admins, Agents, and Employees, real-time WebSocket updates, interactive analytics charts, SLA tracking with live countdowns, S3 file attachments, and a complete ticket lifecycle UI - deployed on Vercel.
 
-Live Demo: [https://ticketing-system-frontend-lilac.vercel.app/](https://ticketing-system-frontend-lilac.vercel.app/)
-
-Backend API Repo: [https://github.com/Anonymous21-03/Ticketing_System_Backend](https://github.com/Anonymous21-03/Ticketing_System_Backend)
-
----
-
-## Features
-
-- **Dashboard and Analytics**:
-  - View key metrics like open, in-progress, resolved, high-priority, and SLA-breached tickets.
-  - Filter dashboard metrics and charts by specific Teams (Admin-only).
-  - Interactive charts (using Recharts) to see ticket status, priority, and daily creation rates.
-- **Ticket Management**:
-  - Search, filter, and page through support tickets.
-  - View SLA status badges ("Breached", "Within SLA", or remaining time indicators) and precise resolution deadlines (`due_at`).
-  - Change ticket status (Open, In Progress, Resolved) and priority (Low, Medium, High).
-  - Open a detailed ticket view to update assignees and post comments.
-  - Team-based agent filtering: Dropdown automatically restricts assignees to only those agents who belong to the selected team.
-  - Attachment management: Secure download requests using on-demand fresh presigned URLs to prevent token expiration.
-- **User Directory**:
-  - Filter users by Team assignment and Active/Deactivated status.
-  - Sort directory dynamically by column headers (`name`, `username`, `email`, `role`, `created_at`, `updated_at`).
-  - View a popup modal list of all tickets currently assigned to any selected user.
-  - Create users, assign roles (Admin, Agent, Employee), and reset passwords.
-- **Team Management**:
-  - Create and organize teams and departments.
-  - Role-scoped Team Detail: Admins view full charts and stats, while Agents and Employees can securely access the page to view their own team's member roster.
-- **Authentication**:
-  - Secure login with role-based routing and a dynamic "My Team" sidebar link for agents/employees belonging to a team.
-  - Keeps user logged in using secure token storage in localStorage.
-- **Modern Styling**:
-  - Sleek design using HSL colors, CSS variables, custom animations, and fully responsive layouts.
+**Live Demo:** [https://ticketing-system-frontend-lilac.vercel.app](https://ticketing-system-frontend-lilac.vercel.app)
+&nbsp;|&nbsp; **Backend API Repo:** [Ticketing_System_Backend](https://github.com/Anonymous21-03/Ticketing_System_Backend)
 
 ---
 
 ## Tech Stack
 
-- **Framework**: React 19
-- **Build Tool**: Vite
-- **Routing**: React Router v7
-- **Charts**: Recharts
-- **HTTP Client**: Axios
-- **Icons**: Lucide React
-- **Notifications**: React Hot Toast
-- **Styling**: Vanilla CSS
+| Layer | Technology |
+|---|---|
+| Framework | React 19 |
+| Build Tool | Vite 8 |
+| Routing | React Router v7 |
+| Charts | Recharts |
+| HTTP Client | Axios (with interceptors) |
+| Icons | Lucide React |
+| Notifications | React Hot Toast |
+| Styling | Vanilla CSS (HSL design tokens, CSS variables, glassmorphism) |
+| Real-time | Native WebSocket with JWT auth |
+| Deployment | Vercel |
+
+---
+
+## Features
+
+### Real-Time WebSocket Updates
+- Authenticated WebSocket connection using JWT tokens
+- Live toast notifications on ticket creation, updates, and new comments from other users
+- Automatic data refresh - dashboards and ticket detail pages update instantly without manual reload
+
+### Role-Based Dashboard
+- **Admin**: total tickets, unassigned count, SLA breaches, user/team counts, status distribution pie chart, priority breakdown bar chart, team filter dropdown to scope all metrics
+- **Agent**: accessible tickets, assigned-to-me count, active/resolved split, SLA breach count
+- **Employee**: personal ticket count, pending help, resolved count, SLA breaches
+- Recent tickets table with quick navigation to detail view
+
+### Ticket Management
+- Search tickets by title/description, filter by status and priority, sort by any column
+- Paginated list with `limit/offset` and page navigation
+- Create tickets via modal with team and assignee selection (role-scoped options)
+- Inline status and priority changes with **optimistic UI updates** and automatic rollback on failure
+- Team-based agent filtering: assignee dropdown restricts to agents belonging to the selected team
+
+### Ticket Detail Page
+- Editable title and description (role-scoped: admin/agent freely, employee only on own open tickets)
+- Properties sidebar: status, priority, team, assignee - all editable via dropdowns for admin/agent
+- **SLA tracking**: live countdown showing remaining time (e.g., "4h 23m remaining"), "SLA Breached" badge, or "Completed On Time" for closed tickets
+- SLA deadline display with precise `due_at` timestamp
+- `resolved_at` timestamp shown when ticket has been resolved
+- Soft-delete with confirmation dialog, admin-only reactivation
+- Tabbed interface with three sections:
+  - **Comments**: threaded comment list with create, inline edit, and delete (with confirmation dialog)
+  - **Attachments**: S3-backed file upload (presign → PUT to S3 → confirm), download via fresh presigned URLs, delete with ownership check
+  - **Audit History**: timeline view showing all ticket changes with field-level diffs (`old → new`)
+
+### User Directory (Admin Only)
+- Search by name, username, or email
+- Filter by role, team assignment, and active/inactive status
+- Sortable column headers (name, username, email, role, created_at, updated_at)
+- Inline actions: edit user, reset password, deactivate/reactivate
+- View assigned tickets modal: popup showing all tickets assigned to a selected user with navigation
+
+### Team Management (Admin Only)
+- Create and manage teams with description
+- Team detail page: full analytics charts for admins, member roster view for agents/employees
+
+### Profile & Security
+- View profile card with username, email, role, and assigned team
+- Change password with client-side validation (8+ chars, uppercase, lowercase, digit, special char)
+
+### Auth & Session Management
+- Login with username/email and password
+- JWT stored in localStorage with automatic Bearer token injection via Axios interceptors
+- Global 401 interceptor: auto-clears token and redirects to login on expired/revoked sessions
+- Logout with server-side token revocation
+- Protected routes with role-based guards (`ProtectedRoute` component with `allowedRoles`)
+- Dynamic sidebar: "My Team" link appears for agents/employees assigned to a team
 
 ---
 
 ## Project Structure
 
 ```
-Ticketing_System_Frontend/
-├── public/                 # Static files and SVG icons
-├── src/
-│   ├── assets/             # Images and design assets
-│   ├── components/
-│   │   ├── layout/         # Header, Sidebar, and overall layout
-│   │   ├── ui/             # Reusable UI parts like buttons, tables, and modals
-│   │   └── ProtectedRoute  # Route guards for authentication
-│   ├── context/            # Auth context for user state
-│   ├── pages/              # Main pages (Dashboard, Tickets, Login, etc.)
-│   ├── services/           # Axios setup and API calls
-│   ├── styles/             # Global CSS and HSL styling variables
-│   ├── App.jsx             # App router and notification setup
-│   └── main.jsx            # Entry point
-├── .env                    # Environment variables configuration
-├── eslint.config.js        # Linter rules
-├── package.json            # Dependencies and scripts
-└── vite.config.js          # Vite config
+src/
+├── components/
+│   ├── layout/             # AppLayout, Header, Sidebar
+│   ├── ui/                 # Badge, Button, ConfirmDialog, EmptyState, Input,
+│   │                       # LoadingSpinner, Modal, Pagination, SearchFilter, Table
+│   ├── CreateTicketModal   # Ticket creation form
+│   ├── CreateUserModal     # User create/edit form
+│   ├── ResetPasswordModal  # Admin password reset
+│   └── ProtectedRoute      # Auth guard with role checks
+├── context/AuthContext      # React Context for user state, login, logout
+├── hooks/useWebSocket       # WebSocket hook with auto-connect and message dispatch
+├── pages/
+│   ├── Dashboard            # Role-scoped analytics with Recharts
+│   ├── TicketList           # Searchable, filterable, paginated ticket table
+│   ├── TicketDetail         # Full ticket view with comments, attachments, audit
+│   ├── UserList             # Admin user directory with modals
+│   ├── TeamList             # Admin team management
+│   ├── TeamDetail           # Team stats and member roster
+│   ├── Profile              # Account settings and password change
+│   ├── Login                # Auth form
+│   └── NotFound             # 404 page
+├── services/                # Axios API modules (auth, tickets, users, teams, comments, attachments)
+├── styles/                  # CSS variables (HSL tokens) and global styles
+├── App.jsx                  # Router setup with nested protected routes
+└── main.jsx                 # Entry point
 ```
 
 ---
@@ -79,72 +117,48 @@ Ticketing_System_Frontend/
 
 ### Prerequisites
 
-- **Node.js**: Version 18 or higher
-- **npm** or **yarn** package manager
+- Node.js 18+
+- npm or yarn
 
-### Setup and Installation
+### Setup
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/Anonymous21-03/Ticketing_System_Frontend.git
-   cd Ticketing_System_Frontend
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure Environment Variables**
-   Create a `.env` file in the root folder and add your backend URL:
-   ```env
-   VITE_API_URL=https://ticketing-system-backend-wpux.onrender.com/
-   ```
-
-### Running Locally
-
-To start the development server:
 ```bash
-npm run dev
+git clone https://github.com/Anonymous21-03/Ticketing_System_Frontend.git
+cd Ticketing_System_Frontend
+npm install
 ```
 
-To build the project for production:
-```bash
-npm run build
+### Environment Variables
+
+Create a `.env` file in the root:
+
+```env
+VITE_API_URL=https://ticketing-system-backend-wpux.onrender.com
 ```
 
-To preview the production build locally:
+### Run
+
 ```bash
-npm run preview
+npm run dev       # Development server
+npm run build     # Production build
+npm run preview   # Preview production build
 ```
 
 ---
 
-## Authentication and Roles
+## Demo Accounts
 
-Access and permissions are controlled based on three user roles:
+Log in with any of the following pre-seeded accounts. Default password for all: **`Password@123`**
 
-- **Admin Role**: Full system access. Can view the user directory, manage teams/departments, create users, edit roles, and reset user passwords.
-- **Agent Role**: Customer support agent or developer. Can view, manage, and comments on tickets, and assign tickets to themselves or team members.
-- **Employee Role**: Regular end-user. Can create new support tickets, view their tickets, add comments, and update status on their tickets.
-
-### Demo / Trial Accounts
-
-You can log in to the application using any of the following pre-seeded trial accounts. The default password for **all accounts** is:
-
-🔑 **Password:** `Password@123`
-
-| Role | Username | Example User | Department / Team |
-| :--- | :--- | :--- | :--- |
-| **Admin** | `rahul` | Rahul Sharma | *(Global / No Team)* |
-| **Admin** | `priya` | Priya Verma | *(Global / No Team)* |
-| **Agent** | `rohan` | Rohan Gupta | Frontend |
-| **Agent** | `kavita` | Kavita Joshi | Backend |
-| **Agent** | `ankit` | Ankit Mehta | Platform Engineering |
-| **Agent** | `meera` | Meera Nair | QA & Testing |
-| **Agent** | `vikram` | Vikram Singh | DevOps |
-| **Employee** | `pooja` | Pooja Desai | Frontend |
-| **Employee** | `deepak` | Deepak Rao | Platform Engineering |
-| **Employee** | `amit` | Amit Tiwari | *(No Team)* |
-
-
+| Role | Username | Team |
+|:---|:---|:---|
+| **Admin** | `rahul` | Global |
+| **Admin** | `priya` | Global |
+| **Agent** | `rohan` | Frontend |
+| **Agent** | `kavita` | Backend |
+| **Agent** | `ankit` | Platform Engineering |
+| **Agent** | `meera` | QA & Testing |
+| **Agent** | `vikram` | DevOps |
+| **Employee** | `pooja` | Frontend |
+| **Employee** | `deepak` | Platform Engineering |
+| **Employee** | `amit` | No Team |
