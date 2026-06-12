@@ -20,11 +20,17 @@ A full-featured React dashboard for an internal help desk system. Features role-
 | Notifications | React Hot Toast |
 | Styling | Vanilla CSS (HSL design tokens, CSS variables, glassmorphism) |
 | Real-time | Native WebSocket with JWT auth |
+| AI Chatbot | Collapsible panel & Floating Action Button (FAB) |
 | Deployment | Vercel |
 
 ---
 
 ## Features
+
+### AI Chatbot UI
+- **Collapsible Floating Panel:** Access the AI ticketing assistant from anywhere in the application via a sleek Floating Action Button (FAB).
+- **Responsive Rich Layout:** Beautifully styled with glassmorphism, nice shadows, custom animations, message bubble alignment, and typing indicators.
+- **Markdown Support:** Renders rich AI responses (including bullet points, bolding, lists, and code) directly within the chat window.
 
 ### Real-Time WebSocket Updates
 - Authenticated WebSocket connection using JWT tokens
