@@ -92,6 +92,7 @@ A full-featured React dashboard for an internal help desk system. Features role-
 ```
 src/
 ├── components/
+│   ├── Chatbot/            # Collapsible AI chatbot interface (Chatbot.jsx, Chatbot.css)
 │   ├── layout/             # AppLayout, Header, Sidebar
 │   ├── ui/                 # Badge, Button, ConfirmDialog, EmptyState, Input,
 │   │                       # LoadingSpinner, Modal, Pagination, SearchFilter, Table
