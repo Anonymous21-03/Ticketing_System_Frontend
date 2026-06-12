@@ -26,7 +26,6 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="logo-section">
-            <span className="logo-icon">🎟️</span>
             <span className="logo-text">SupportFlow</span>
           </div>
           <button className="sidebar-close-btn" onClick={toggleSidebar} aria-label="Close sidebar">

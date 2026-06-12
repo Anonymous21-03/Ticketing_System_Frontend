@@ -65,7 +65,6 @@ export default function Login() {
       <div className="login-card-wrapper fade-in">
         <div className="login-card glass-card">
           <div className="login-header">
-            <div className="login-logo">🎟️</div>
             <h2 className="login-title">SupportFlow</h2>
             <p className="login-subtitle">Sign in to manage support tickets</p>
           </div>
